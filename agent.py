@@ -5,6 +5,7 @@ from resource import Resource
 EMPTY_CELL = 0
 BARRIER_CELL = -1
 
+
 class Agent:
     # Constructor for an Agent.
     # - id: unique identifier for this agent
@@ -19,10 +20,9 @@ class Agent:
         self.fov_radius = fov_radius
         self.resources = resources
         self.metabolic_rate = metabolic_rate
-        if (strategy < -10 or strategy > 10):
+        if strategy < -10 or strategy > 10:
             print("Error: unexpected strategy value. Expected [-10, 10]")
         self.strategy = strategy
-    
 
     # Returns the best movement decision for the Agent based on the given environment 
     # and the agent's field of vision
@@ -66,7 +66,6 @@ class Agent:
 
         return self._find_best_move(scores) 
 
-
     # Finds the best move among a grid of scores. If multiple cells contain the best score, a 
     # random cell will be chosen and returned among these cells.
     def _find_best_move(self, scores):
@@ -87,30 +86,26 @@ class Agent:
                 best_moves.append((move_x, move_y))
 
         # Consistency check
-        if (best_score == -math.inf): print("Error: barrier block chosen in _find_best_move!")
+        if best_score == -math.inf:
+            print("Error: barrier block chosen in _find_best_move!")
 
         return random.choice(best_moves)
 
-    
     # Return the number of resources that the agent currently has
     def get_resources(self):
         return self.resources
-
 
     # Add a given number of resources to the agents resource collection
     def add_resources(self, amount):
         self.resources += amount
 
-
     # Update the agents resources for a single turn
     def update_resources(self):
         self.resources -= self.metabolic_rate
-    
 
     # Return the unique identifier of the agent
     def get_id(self):
         return self.id
-
 
     # Returns the agent's field of vision
     def get_field_of_vision(self):
