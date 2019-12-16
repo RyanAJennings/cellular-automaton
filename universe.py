@@ -1,7 +1,6 @@
 from resource import Resource
 from agent import Agent
-import random
-from random import randrange
+from randomgen import PCG64
 
 
 class Universe:
@@ -13,7 +12,7 @@ class Universe:
     # - env_size: integer size of the environment
     # - resource_prob: the probability that, given any empty cell in the environment, 
     #   a resources resides there.
-    def __init__(self, num_agents, env_size, resource_prob):
+    def __init__(self, num_agents, env_size, resource_prob, seed=1234567):
         self.agents = list()
         self.resources = list()
         self.agents_loc = dict()
@@ -23,16 +22,23 @@ class Universe:
         # Keep track of agents that have been eliminated in the current turn to remove them from the universe
         self.agents_to_remove = []
 
+        # Four streams:
+        # 0. To place agents randomly in the environment
+        # 1. To determine strategy value for each agent
+        # 2. To determine whether a cell is a resource cell
+        # 3. To shuffle the list of agents
+        self.streams = [PCG64(seed, stream) for stream in range(4)]
+
         # Place agents randomly in the environment
         for i in range(num_agents):
-            rand_start_x = randrange(0, env_size-1) 
-            rand_start_y = randrange(0, env_size-1)
+            rand_start_x = self.streams[0].generator.randint(0, env_size-1, closed=True)
+            rand_start_y = self.streams[0].generator.randint(0, env_size-1, closed=True)
             while self.environment[rand_start_x][rand_start_y] != self.EMPTY_CELL:
-                rand_start_x = randrange(0, env_size-1) 
-                rand_start_y = randrange(0, env_size-1)
-            
-            # TODO vary fov_radius, metabolic_rate, strategy of each agent
-            self.agents.append(Agent(id=i+1, fov_radius=1, resources=10, metabolic_rate=1, strategy = randrange(-10, 10)))
+                rand_start_x = self.streams[0].generator.randint(0, env_size-1, closed=True)
+                rand_start_y = self.streams[0].generator.randint(0, env_size-1, closed=True)
+
+            self.agents.append(Agent(id=i+1, fov_radius=1, resources=10, metabolic_rate=1,
+                                     strategy=self.get_random_strategy(), seed=i))
 
             self.agents_loc[self.agents[i]] = (rand_start_x, rand_start_y)
             self.environment[rand_start_x][rand_start_y] = self.agents[i]
@@ -44,9 +50,18 @@ class Universe:
                 if self.environment[i][j] != self.EMPTY_CELL:
                     continue
                 # With probability resource_prob, place a resource in this cell
-                if random.uniform(0,1) < resource_prob:
+                if self.streams[2].generator.uniform(0, 1) < resource_prob:
                     self.resources.append(Resource(10))
                     self.environment[i][j] = self.resources[-1]
+
+    def get_random_strategy(self):
+        strategy = self.streams[1].generator.normal(loc=0.0, scale=5.0)
+        strategy = int(round(strategy))
+        if strategy < -10:
+            strategy = -10
+        if strategy > 10:
+            strategy = 10
+        return strategy
 
     # Updates the agents and resources in the environment
     def update(self):
@@ -56,7 +71,7 @@ class Universe:
             exit(0)
         
         # Move the agents in a random order
-        random.shuffle(self.agents)
+        self.streams[3].generator.shuffle(self.agents)
         for agent in self.agents:
             # If this agent was eliminated by another agent in this timestep
             if agent in self.agents_to_remove:
@@ -147,7 +162,7 @@ class Universe:
             # Flag agent_1 as dead
             self.agents_to_remove.append(agent_1)
             print("Agent", agent_2.get_id(), "killed Agent", agent_1.get_id())
-            return agent_2 # Return the winner
+            return agent_2  # Return the winner
 
     # Resolve a collision between an agent and a resource cell
     def resolve_resource_collision(self, agent, resource, new_x, new_y):

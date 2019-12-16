@@ -1,6 +1,6 @@
-import random
 import math
 from resource import Resource
+from randomgen import PCG64
 
 EMPTY_CELL = 0
 BARRIER_CELL = -1
@@ -15,7 +15,7 @@ class Agent:
     # - metabolic_rate: how many resources the agent loses per move
     # - strategy: ranges from [-10, 10] where -10 is the most defensive and 10 is 
     #   the most aggressive
-    def __init__(self, id, fov_radius, resources, metabolic_rate, strategy):
+    def __init__(self, id, fov_radius, resources, metabolic_rate, strategy, seed):
         self.id = id
         self.fov_radius = fov_radius
         self.resources = resources
@@ -23,6 +23,7 @@ class Agent:
         if strategy < -10 or strategy > 10:
             print("Error: unexpected strategy value. Expected [-10, 10]")
         self.strategy = strategy
+        self.generator = PCG64(seed, 0).generator
 
     # Returns the best movement decision for the Agent based on the given environment 
     # and the agent's field of vision
@@ -89,7 +90,7 @@ class Agent:
         if best_score == -math.inf:
             print("Error: barrier block chosen in _find_best_move!")
 
-        return random.choice(best_moves)
+        return self.generator.choice(best_moves)
 
     # Return the number of resources that the agent currently has
     def get_resources(self):
