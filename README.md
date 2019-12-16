@@ -52,6 +52,8 @@ Metabolic rate is the number of units of resources consumed per update. Metaboli
 
 Strategy is an indication of how another agent is percieved by an agent. It is an integer value between -10 and 10, where the value is used for scoring when deciding on what move to perform, as explained below. The strategy for each agent is calculated as follows: a random value is drawn from a normal distribution with mean 0 and standard deviation of 5, then this value is rounded to nearest integer, except any value <-10 is set to -10 and any value >10 is set to 10.
 
+When an agent is asked to make a move, it looks at its restricted environment and creates a list of scores. This is constructed so that every cell in the restricted environment is assigned a number. To get the score for a cell, we loop over all the agents and resources in the restricted environment. For each resource we add `resource value - distance to resource` to cell's score. For each agent we add `strategy value - distance to agent` if strategy value is positive, `strategy value + distance to agent` if strategy value is negative, and if strategy value is zero, than it has no affect on the score of the cell at all. Once the scores are calculated, the agent selects the move with the maximum score (or randomly selects one if there are multiple).
+
 ### Resource
 
 Once the agents are placed in the universe, all the remaining cells in the environment has resource_prob chance to be a resource cell. Resource cells indicate a resource with 10 units, agents can move to the cell that has the resource and consume it, adding 10 units to the amount of resources the agent has. 
@@ -64,7 +66,10 @@ Statistics class implements the functions that collects all the data that is nee
 
 To make sure our model is doing the "right thing" we ran the following tests:
 
-
+* test_find_best_move(): Asserts that _find_best_move() method works as expected.
+* test_single_agent(): Initializes a universe with single agent assert the simulation does not run.
+* test_two_agents(): Initializes a universe with two agents without any resources and asserts the simulation does not update more than 10 times.
+* test_simulation_run(): A complete run of simulation with 2 agents and resource probability 0.4. We can debug output is printed so we can see what moves agents make at each step. 
 
 ## Collected Statistics
 
@@ -80,4 +85,3 @@ The simulation allows various values to be changed. To avoid trying to explore t
 
 
 ## How to run
-

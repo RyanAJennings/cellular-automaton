@@ -55,13 +55,14 @@ class Agent:
                     continue
 
                 # Adjust the scores based on the cells manhattan distance to an agent
-                for (x,y), agent in agents:
-                    distance = max(abs(x-i), abs(y-j)) # Manhattan distance with sloped movement
-                    # More aggressive agents will score movement toward agents higher than more defensive agents
-                    scores[i][j] += self.strategy + distance if self.strategy < 0 else self.strategy - distance
+                if self.strategy != 0:
+                    for (x, y), agent in agents:
+                        distance = max(abs(x-i), abs(y-j)) # Manhattan distance with sloped movement
+                        # More aggressive agents will score movement toward agents higher than more defensive agents
+                        scores[i][j] += self.strategy + distance if self.strategy < 0 else self.strategy - distance
 
                 # Adjust the scores based on the cells manhattan distance to a resource
-                for (x,y), resource in resources:
+                for (x, y), resource in resources:
                     distance = max(abs(x-i), abs(y-j)) # Manhattan distance with sloped movement
                     scores[i][j] += resource.get_amount() - distance
 
@@ -73,7 +74,7 @@ class Agent:
         fov_radius = self.fov_radius
 
         # Agents move one cell per turn
-        moves = [(0,0), (-1,0), (-1,1), (-1,-1), (0,1), (0,-1), (1,-1), (1,1)]
+        moves = [(0, 0), (-1, 0), (-1, 1), (-1, -1), (0, 1), (0, -1), (1, -1), (1, 1)]
 
         # Keep track of the best possible score and the moves that result in them
         best_score = -math.inf
@@ -90,7 +91,7 @@ class Agent:
         if best_score == -math.inf:
             print("Error: barrier block chosen in _find_best_move!")
 
-        return self.generator.choice(best_moves)
+        return self.generator.choice(best_moves).tolist()
 
     # Return the number of resources that the agent currently has
     def get_resources(self):
@@ -103,6 +104,7 @@ class Agent:
     # Update the agents resources for a single turn
     def update_resources(self):
         self.resources -= self.metabolic_rate
+        return self.resources
 
     # Return the unique identifier of the agent
     def get_id(self):
@@ -111,3 +113,10 @@ class Agent:
     # Returns the agent's field of vision
     def get_field_of_vision(self):
         return self.fov_radius
+
+    def print_stats(self):
+        print("Agent ", self.id)
+        print("\tField of vision    :", self.fov_radius)
+        print("\tResources          :", self.resources)
+        print("\tMetabolic rate     :", self.metabolic_rate)
+        print("\tStrategy           :", self.strategy)

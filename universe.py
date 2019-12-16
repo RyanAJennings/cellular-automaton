@@ -12,12 +12,13 @@ class Universe:
     # - env_size: integer size of the environment
     # - resource_prob: the probability that, given any empty cell in the environment, 
     #   a resources resides there.
-    def __init__(self, num_agents, env_size, resource_prob, seed=1234567):
+    def __init__(self, num_agents, env_size, resource_prob, seed=1234567, debug=False):
         self.agents = list()
         self.resources = list()
         self.agents_loc = dict()
         self.environment = [[self.EMPTY_CELL for x in range(env_size)] for y in range(env_size)]
         self.env_size = env_size
+        self.debug = debug
         
         # Keep track of agents that have been eliminated in the current turn to remove them from the universe
         self.agents_to_remove = []
@@ -63,13 +64,19 @@ class Universe:
             strategy = 10
         return strategy
 
+    def is_finished(self):
+        if len(self.agents) == 1:
+            if self.debug:
+                print("Agent", self.agents[0].get_id(), "has won!")
+            return True
+        return False
+
     # Updates the agents and resources in the environment
     def update(self):
-        # If only one agent remains in the simulation, then trigger endgame
-        if len(self.agents) == 1:
-            print("Agent", self.agents[0].get_id(), "has won!")
-            exit(0)
-        
+        if self.is_finished():
+            print("Simulation has ended. Agent", self.agents[0].get_id(), "has won!")
+            return
+
         # Move the agents in a random order
         self.streams[3].generator.shuffle(self.agents)
         for agent in self.agents:
@@ -78,7 +85,9 @@ class Universe:
                 continue
             
             # Update the agents resources based on the agents metabolic rate
-            agent.update_resources()
+            if agent.update_resources() <= 0:
+                self.agents_to_remove.append(agent)
+                continue
 
             # Allow the agent to strategically determine its desired move
             # This should be one of [(0,0), (-1, 0), (1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]
@@ -91,7 +100,7 @@ class Universe:
             # Get the agents current location
             old_loc_x, old_loc_y = self.agents_loc[agent]
             # Consistency check
-            if self.environment[old_loc_x][old_loc_y] != agent:
+            if self.debug and self.environment[old_loc_x][old_loc_y] != agent:
                 print("Agent location does not match environment!")
 
             # Resolve the movement of the agent to the new location
@@ -101,16 +110,16 @@ class Universe:
         for agent in self.agents_to_remove:
             self.agents.remove(agent)
             del self.agents_loc[agent]
+            # If one agent is left, stop removing, remaining agent is the winner
+            if len(self.agents) == 1:
+                break
         self.agents_to_remove = []
-
-        # TODO: Regenerate resources in the environment
-        # Update the resources in the environment
-        #for resource in self.resources:
-        #    resource.update()
 
     # Resolves the movement of an agent from its current location to a new location
     def resolve_movement(self, old_x, old_y, new_x, new_y):
-        print("Agent", self.environment[old_x][old_y].get_id(), "wants to move from (", old_x, ",", old_y, ") to (", new_x, ",", new_y, ")")
+        if self.debug:
+            print("Agent", self.environment[old_x][old_y].get_id(),
+                  "wants to move from (", old_x, ",", old_y, ") to (", new_x, ",", new_y, ")")
 
         # If the agent intends to stay in place
         if old_x == new_x and old_y == new_y:
@@ -120,7 +129,8 @@ class Universe:
         new_cell = self.environment[new_x][new_y]
         
         if not isinstance(old_cell, Agent):
-            print("Error: old_cell not agent!")
+            if self.debug:
+                print("Error: old_cell not agent!")
             print(old_x, ",", old_y) 
 
         # If the agent is moving to attack another agent
@@ -133,7 +143,7 @@ class Universe:
 
         # If the agent is moving into an empty cell
         else:
-            if self.environment[new_x][new_y] != self.EMPTY_CELL:
+            if self.debug and self.environment[new_x][new_y] != self.EMPTY_CELL:
                 print("Error: new_cell is not an agent, resource, or an empty cell. (92)")
             self.agents_loc[old_cell] = (new_x, new_y)
             self.environment[new_x][new_y] = old_cell
@@ -150,7 +160,8 @@ class Universe:
             self.agents_loc[agent_1] = (new_x, new_y)
             # Flag agent_2 as dead
             self.agents_to_remove.append(agent_2)
-            print("Agent", agent_1.get_id(), "killed Agent", agent_2.get_id())
+            if self.debug:
+                print("Agent", agent_1.get_id(), "killed Agent", agent_2.get_id())
             return agent_1 # Return winner
 
         # Agent 2 wins the fight
@@ -161,7 +172,8 @@ class Universe:
             self.agents_loc[agent_2] = (new_x, new_y)
             # Flag agent_1 as dead
             self.agents_to_remove.append(agent_1)
-            print("Agent", agent_2.get_id(), "killed Agent", agent_1.get_id())
+            if self.debug:
+                print("Agent", agent_2.get_id(), "killed Agent", agent_1.get_id())
             return agent_2  # Return the winner
 
     # Resolve a collision between an agent and a resource cell
