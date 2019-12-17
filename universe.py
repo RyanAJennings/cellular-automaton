@@ -12,7 +12,8 @@ class Universe:
     # - env_size: integer size of the environment
     # - resource_prob: the probability that, given any empty cell in the environment, 
     #   a resources resides there.
-    def __init__(self, num_agents, env_size, resource_prob, seed=8675309, debug=False):
+    def __init__(self, num_agents, env_size, resource_prob, metabolic_rate=1, field_of_vision=1,
+                 seed=1234567, debug=False):
         self.timestep = 0
         self.agents = list()
         self.resources = list()
@@ -39,7 +40,7 @@ class Universe:
                 rand_start_x = self.streams[0].generator.randint(0, env_size-1, closed=True)
                 rand_start_y = self.streams[0].generator.randint(0, env_size-1, closed=True)
 
-            self.agents.append(Agent(id=i+1, fov_radius=1, resources=10, metabolic_rate=1,
+            self.agents.append(Agent(id=i+1, fov_radius=field_of_vision, resources=10, metabolic_rate=metabolic_rate,
                                      strategy=self.get_random_strategy(), seed=i))
 
             self.agents_loc[self.agents[i]] = (rand_start_x, rand_start_y)
@@ -86,6 +87,8 @@ class Universe:
             # Update the agents resources based on the agents metabolic rate
             if agent.update_resources() <= 0:
                 self.agents_to_remove.append(agent)
+                loc_x, loc_y = self.agents_loc[agent]
+                self.environment[loc_x][loc_y] = self.EMPTY_CELL
                 continue
 
             # Allow the agent to strategically determine its desired move
@@ -113,15 +116,16 @@ class Universe:
             self.agents.remove(agent)
             del self.agents_loc[agent]
             # If one agent is left, stop removing, remaining agent is the winner
-            #if len(self.agents) == 1:
-            #    break
+            if len(self.agents) == 1:
+                break
         self.agents_to_remove = []
 
         if self.is_finished():
             for agent in self.agents:
                 agent.set_time_alive(self.timestep+1) # Record the winning agents time alive
             stats.update(True, self.timestep+1, [])
-            print("Simulation has ended. Agent", self.agents[0].get_id(), "has won!")
+            if self.debug:
+                print("Simulation has ended. Agent", self.agents[0].get_id(), "has won!")
             return
 
     # Resolves the movement of an agent from its current location to a new location

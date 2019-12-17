@@ -1,6 +1,7 @@
 from universe import Universe
 from agent import Agent
 from util import print_environment
+from statistics import Statistics
 
 
 def test_single_agent():
@@ -16,9 +17,10 @@ def test_single_agent():
 def test_two_agents():
     print("### test_two_agents() ###")
     universe = Universe(2, 5, 0.0, debug=False)
+    stats = Statistics()
     counter = 0
     while not universe.is_finished():
-        universe.update()
+        universe.update(stats)
         counter += 1
 
     assert counter <= 10
@@ -27,6 +29,7 @@ def test_two_agents():
 def test_simulation_run():
     print("### test_simulation_run() ###")
     universe = Universe(2, 5, 0.4, debug=True)
+    stats = Statistics()
     print("Start:")
     print_environment(universe)
     print("Agent stats:")
@@ -34,7 +37,7 @@ def test_simulation_run():
         agent.print_stats()
 
     while not universe.is_finished():
-        universe.update()
+        universe.update(stats)
         print_environment(universe)
 
 

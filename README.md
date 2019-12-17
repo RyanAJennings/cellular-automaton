@@ -73,15 +73,85 @@ To make sure our model is doing the "right thing" we ran the following tests:
 
 ## Collected Statistics
 
-The simulation allows various values to be changed. To avoid trying to explore the full variable space, we decided to change variables one at a time, while keeping all the others at their default values. Thus, we collected the number of times a strategy has won over [N] simulation runs:
+The simulation allows various values to be changed. To avoid trying to explore the full variable space, we decided to change variables one at a time, while keeping all the others at their default values. Thus, we collected the number of times a strategy has won over 100 simulation runs.
 
 * Number of agents: With respect to environment size, from 5% to 70%
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/num_agents_table.png" alt="num_agents_table" style="zoom:40%;" />
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/num_agents_graph.png" alt="num_agents_graph" style="zoom:40%;" />
+
 * Resource abundance: Controlled by resource_prob variable from 0.1 to 0.9
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/resource_prob_table.png" alt="resource_prob_table" style="zoom:40%;" />
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/resource_prob_graph.png" alt="resource_prob_graph" style="zoom:40%;" />
+
 * Field of vision: Varying from 1 to 5
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/field_of_vision_table.png" alt="field_of_vision_table" style="zoom:40%;" />
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/field_of_vision_graph.png" alt="field_of_vision_graph" style="zoom:40%;" />
+
 * Metabolic rate: Varying from 1 to 10
+
+  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/metabolic_rate_table.png" alt="metabolic_rate_table" style="zoom:40%;" />
+
+<img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/metabolic_rate_graph.png" alt="metabolic_rate_graph" style="zoom:40%;" />
 
 ## Conclusions
 
+Since we do our analysis varying one variable at a time, the default values we used are important for our conclusions:
 
+```
+value for each resource: 10
+agent strategy distribution: normal(0, 5)
+agent placement in the grid: random, uniform
+num_agents: 100
+env_size: 30
+resource_prob: 0.4
+metabolic_rate: 1
+field_of_vision: 1
+```
+
+With these default values, looking at the tables and graphs above we can conclude:
+
+* In most cases expected strategy value of the winning agent is around 4.
+* The most winning strategy value is usually 1 or 2.
+* The standard deviation of the winning strategy value is usually between 4-5
+* Changing the number of agents, resource abundance and field of vision of agents do not have any significant effect on average winning strategy value or most winning strategy value or the standard deviation of the winning strategy value.
+* As metabolic rate of agents increase, average winning strategy value drops from around 4 to around 0. We also see most winning value to go down to negative strategy values. Standard devaition of the winning strategy value stays between 4-5.
 
 ## How to run
+
+Python 3 and package randomgen is required to run the simulation.
+
+* To run the tests:
+
+  ```
+  python tests.py
+  ```
+
+* To run the script that collects the statistics (takes around 10 minutes to run):
+
+  ```
+  python collect_stats.py
+  ```
+
+* To run a demo version of the simulation with each state printed out to terminal:
+
+  ```
+  python main.py
+  ```
+
+* The graphs above can be reproduced by running the R script named `analysis.R`
+
+* Any instance of the simulation (with Universe parameters initialized) can be run in Python as follows:
+
+  ```python
+  universe = Universe(num_agents, env_size, resource_prob, 
+  										metabolic_rate=1, field_of_vision, seed, debug)
+  stats = Statistics()
+  while not universe.is_finished():
+      universe.update(stats)
+  ```
