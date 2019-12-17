@@ -24,6 +24,7 @@ class Agent:
             print("Error: unexpected strategy value. Expected [-10, 10]")
         self.strategy = strategy
         self.generator = PCG64(seed, 0).generator
+        self.time_alive = 0
 
     # Returns the best movement decision for the Agent based on the given environment 
     # and the agent's field of vision
@@ -92,6 +93,9 @@ class Agent:
             print("Error: barrier block chosen in _find_best_move!")
 
         return self.generator.choice(best_moves).tolist()
+    
+    def die(self, time):
+        self.time_alive = time
 
     # Return the number of resources that the agent currently has
     def get_resources(self):

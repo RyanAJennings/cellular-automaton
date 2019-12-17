@@ -1,3 +1,4 @@
+from stats import Stats
 from universe import Universe
 from util import print_environment
 
@@ -8,6 +9,8 @@ print("Agent stats:")
 for agent in universe.agents:
     agent.print_stats()
 
+stats = Stats()
 while not universe.is_finished():
-    universe.update()
+    universe.update(stats)
     print_environment(universe)
+stats.print()
