@@ -60,7 +60,7 @@ Once the agents are placed in the universe, all the remaining cells in the envir
 
 ### Statistics
 
-Statistics class implements the functions that collects all the data that is needed over multiple runs of simulation. Specific statistics collected are explained on a seperate section.
+Statistics class implements the functions that collects all the data that is needed over one run of simulation. Specific statistics collected are explained on a seperate section.
 
 ## Testing
 
