@@ -52,7 +52,7 @@ class Statistics:
         if len(self.defensive_agents) > 0:
             for agent in self.defensive_agents:
                 self.avg_lifespans[0] += agent.time_alive
-            self.avg_lifespans[0] = self.avg_lifespans[0] /len(self.defensive_agents)
+            self.avg_lifespans[0] = self.avg_lifespans[0] / len(self.defensive_agents)
         if len(self.neutral_agents) > 0:
             for agent in self.neutral_agents:
                 self.avg_lifespans[1] += agent.time_alive
