@@ -12,9 +12,7 @@ class Stats:
 
         self.avg_win_strategy = 0
         self.avg_win_metabolic_rate = 0
-        self.avg_lifespan_aggressive = 0
-        self.avg_lifespan_defensive = 0
-        self.avg_lifespan_neutral = 0
+        self.avg_lifespans = [0, 0, 0]   # Average defensive, neutral, and aggressive lifespans
 
     
     def update(self, final, time, dead_agents):
@@ -49,19 +47,19 @@ class Stats:
         self.avg_win_strategy = self.avg_win_strategy/len(self.living_agents)
         self.avg_win_metabolic_rate = self.avg_win_metabolic_rate/len(self.living_agents)
 
-        # Compute avg_lifespan_aggressive, avg_lifespan_defensive, and avg_lifespan_neutral
-        if len(self.aggressive_agents) > 0:
-            for agent in self.aggressive_agents:
-                self.avg_lifespan_aggressive += agent.time_alive
-            self.avg_lifespan_aggressive = self.avg_lifespan_aggressive/len(self.aggressive_agents)
+        # Compute avg_lifespan_aggressive, avg_lifespan_defensive, and avg_lifespan_neutra
         if len(self.defensive_agents) > 0:
             for agent in self.defensive_agents:
-                self.avg_lifespan_defensive += agent.time_alive
-            self.avg_lifespan_defensive = self.avg_lifespan_defensive/len(self.defensive_agents)
+                self.avg_lifespans[0] += agent.time_alive
+            self.avg_lifespans[0]  = self.avg_lifespans[0] /len(self.defensive_agents)
         if len(self.neutral_agents) > 0:
             for agent in self.neutral_agents:
-                self.avg_lifespan_neutral += agent.time_alive
-            self.avg_lifespan_neutral = self.avg_lifespan_neutral/len(self.neutral_agents)
+                self.avg_lifespans[1] += agent.time_alive
+            self.avg_lifespans[1] = self.avg_lifespans[1]/len(self.neutral_agents)
+        if len(self.aggressive_agents) > 0:
+            for agent in self.aggressive_agents:
+                self.avg_lifespans[2] += agent.time_alive
+            self.avg_lifespans[2] = self.avg_lifespans[2]/len(self.aggressive_agents)
 
 
 
@@ -70,8 +68,8 @@ class Stats:
         print("Simulation Statistics")
         print("(Average) Strategy of Winning Agent(s):", self.avg_win_strategy)
         print("(Average) Metabolic Rate of Winning Agent(s):", self.avg_win_metabolic_rate)
-        print("Avg Aggressive Agent Lifespan:", self.avg_lifespan_aggressive)
-        print("Avg Defensive Agent Lifespan:", self.avg_lifespan_defensive)
-        print("Avg Neutral Agent Lifespan:", self.avg_lifespan_neutral)
+        print("Avg Defensive Agent Lifespan:", self.avg_lifespans[0])
+        print("Avg Neutral Agent Lifespan:", self.avg_lifespans[1])
+        print("Avg Aggressive Agent Lifespan:", self.avg_lifespans[2])
         print("--------------------------------")
         

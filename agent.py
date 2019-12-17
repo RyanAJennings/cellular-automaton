@@ -94,7 +94,7 @@ class Agent:
 
         return self.generator.choice(best_moves).tolist()
     
-    def die(self, time):
+    def set_time_alive(self, time):
         self.time_alive = time
 
     # Return the number of resources that the agent currently has

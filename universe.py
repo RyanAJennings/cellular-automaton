@@ -109,7 +109,7 @@ class Universe:
 
         # Remove eliminated agents
         for agent in self.agents_to_remove:
-            agent.die(self.timestep)  # Update the agents time alive
+            agent.set_time_alive(self.timestep)  # Update the agents time alive
             self.agents.remove(agent)
             del self.agents_loc[agent]
             # If one agent is left, stop removing, remaining agent is the winner
@@ -119,7 +119,7 @@ class Universe:
 
         if self.is_finished():
             for agent in self.agents:
-                agent.die(self.timestep+1) # Record the winning agents time alive
+                agent.set_time_alive(self.timestep+1) # Record the winning agents time alive
             stats.update(True, self.timestep+1, [])
             print("Simulation has ended. Agent", self.agents[0].get_id(), "has won!")
             return
