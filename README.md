@@ -77,27 +77,27 @@ The simulation allows various values to be changed. To avoid trying to explore t
 
 * Number of agents: With respect to environment size, from 5% to 70%
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/num_agents_table.png" alt="num_agents_table" style="zoom:40%;" />
+  <img src="./output/num_agents_table.png" alt="num_agents_table" style="zoom:40%;" />
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/num_agents_graph.png" alt="num_agents_graph" style="zoom:40%;" />
+  <img src="./output/num_agents_graph.png" alt="num_agents_graph" style="zoom:40%;" />
 
 * Resource abundance: Controlled by resource_prob variable from 0.1 to 0.9
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/resource_prob_table.png" alt="resource_prob_table" style="zoom:40%;" />
+  <img src="./output/resource_prob_table.png" alt="resource_prob_table" style="zoom:40%;" />
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/resource_prob_graph.png" alt="resource_prob_graph" style="zoom:40%;" />
+  <img src="./output/resource_prob_graph.png" alt="resource_prob_graph" style="zoom:40%;" />
 
 * Field of vision: Varying from 1 to 5
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/field_of_vision_table.png" alt="field_of_vision_table" style="zoom:40%;" />
+  <img src="./output/field_of_vision_table.png" alt="field_of_vision_table" style="zoom:40%;" />
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/field_of_vision_graph.png" alt="field_of_vision_graph" style="zoom:40%;" />
+  <img src="./output/field_of_vision_graph.png" alt="field_of_vision_graph" style="zoom:40%;" />
 
 * Metabolic rate: Varying from 1 to 10
 
-  <img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/metabolic_rate_table.png" alt="metabolic_rate_table" style="zoom:40%;" />
+  <img src="./output/metabolic_rate_table.png" alt="metabolic_rate_table" style="zoom:40%;" />
 
-<img src="/Users/ardabasaran/Desktop/Simulation/cellular-automaton/output/metabolic_rate_graph.png" alt="metabolic_rate_graph" style="zoom:40%;" />
+<img src="./output/metabolic_rate_graph.png" alt="metabolic_rate_graph" style="zoom:40%;" />
 
 ## Conclusions
 
