@@ -1,6 +1,4 @@
-# Simulation Final Group Project
-
-*Ryan Jennings - Arda Basaran - Aaron Gano*
+# cellular-automaton
 
 ## Description
 
@@ -149,8 +147,7 @@ Python 3 and package randomgen is required to run the simulation.
 * Any instance of the simulation (with Universe parameters initialized) can be run in Python as follows:
 
   ```python
-  universe = Universe(num_agents, env_size, resource_prob, 
-  										metabolic_rate=1, field_of_vision, seed, debug)
+  universe = Universe(num_agents, env_size, resource_prob, metabolic_rate=1, field_of_vision, seed, debug)
   stats = Statistics()
   while not universe.is_finished():
       universe.update(stats)
